@@ -4,9 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "json-server": "json-server --watch db.json --port=3000",
-    "nodemon": "nodemon",
-    "start": "concurrently npm:nodemon npm:json-server"
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",

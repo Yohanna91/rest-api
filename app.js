@@ -1,52 +1,62 @@
 
+const fs = require("fs")
 const express = require('express')
 const app = express()
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }))
 
 // GET = Get all books
 app.get("/books", (req, res) => {
-  fetch("http://localhost:3000/books")
-  .then(res => res.json())
-  .then(books => {
-    res.json(books)
+  fs.readFile("db.json", 'utf-8', function(err, data) {
+    const booksObject = JSON.parse(data);
+    res.json(booksObject)
   })
 })
 
 // POST = Add a new book
 app.post("/books", (req, res) => {
-  fetch("http://localhost:3000/books", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(req.body)
+  fs.readFile("db.json", 'utf-8', function(err, data) {
+    const booksObject = JSON.parse(data);
+    booksObject["books"].push(req.body)
+    fs.writeFileSync("db.json", JSON.stringify(booksObject), "utf-8")
+    res.send(booksObject)
   })
-  res.send("Book tillagd!!!!")
 })
 
 // PUT = Update a single book
 app.put("/books/:id", (req, res) => {
-  fetch("http://localhost:3000/books/" + req.params.id, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(req.body)
+  fs.readFile("db.json", 'utf-8', function(err, data) {
+    const booksObject = JSON.parse(data);
+    const result = booksObject["books"].filter(book => book.id == req.params.id)[0]
+    result.title = req.body.title || result.title
+    result.author = req.body.author || result.author
+    result.published = req.body.published || result.published
+    booksObject["books"].forEach((book, index) => {
+      if (book.id == result.id) {
+        booksObject["books"][index] = result
+        fs.writeFileSync("db.json", JSON.stringify(booksObject), "utf-8")
+        res.send(booksObject["books"][index])
+      }
+    })
   })
-  res.send("Book " + req.params.id + " uppdaterad!")
 })
 
 // DELETE = Delete a single book
 app.delete("/books/:id", (req, res) => {
-  fetch("http://localhost:3000/books/" + req.params.id, {
-    method: "DELETE"
+  fs.readFile("db.json", 'utf-8', function(err, data) {
+    const booksObject = JSON.parse(data);
+    booksObject["books"].forEach((book, index) => {
+      if (book.id == req.params.id) {
+        booksObject["books"].splice(index, 1)
+      }
+    })
+    fs.writeFileSync("db.json", JSON.stringify(booksObject), "utf-8")
+    res.send(booksObject)
   })
-  res.send("Boken är borttagen!")
 })
 
 app.get("*", (req, res) => {
-  res.status(404).send("404 Page not found")
+  res.status(404).send("Page not found.")
 })
 
 app.listen(4000, () => {

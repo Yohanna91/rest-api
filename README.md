@@ -1,17 +1,29 @@
-# Inlämning för G krav
+# Inlämning för G
 
-Denna inlämning innehåller en struktur för Express för att
-starta projektet på port 4000. 
+## Beskrivning
 
-Det finns 4 olika routes med endpointen /books som är där datan
-för böckerna ligger (db.json).
+Denna uppgift innehåller en Express applikation med 4 olika endpoints *GET*, *POST*, *PUT* och *Delete* och databasen är en db.json fil som innehåller en array med books. Uppgiften har i syfte att uppnå G krav.
 
-Jag använder JSON-server som laddats ner från npmjs.org
-och nodemeon och kör dem samtidigt med ett paket som heter
-concurrently från npmjs. Detta för att starta båda samtidigt.
+## För att köra applikation
 
-Uppgiften testades med Rest Client och det går att läsa alla böcker,
-lägga till en bok, uppdater och radera böcker.
+Kör ``npm start`` och kommer då köras på port **4000**
 
-Alla anrop till databas filen sker med hjälp av javascript apiet
-(fetch).
+
+----
+
+Projektet innehåller en *.rest* fil för att testa alla endpoints. För att göra POST eller en PUT så behöver du skriva följande som **body** då ``Content-Type`` är  application/x-www-form-urlencoded
+
+För **POST**
+
+id=[ID]   
+&title=Pippi Långstrump  
+&author=Astrid Lindgren  
+&published=2006
+
+För **PUT**
+  
+&title= Nya titeln.   
+&author=Nya författaren.  
+&published=Nya publiceringsdatumet.
+
+**node_modules** är inte med då det är ignorerat i *.gitignore* filen
